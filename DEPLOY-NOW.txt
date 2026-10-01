@@ -1,0 +1,59 @@
+════════════════════════════════════════════════════════════════
+ EplyD — COMPLETE deploy package (source + prebuilt dashboard)
+════════════════════════════════════════════════════════════════
+
+This zip contains EVERYTHING:
+  • all source code (108 files)
+  • pre-built output:  apps/server/dist  +  apps/web/dist
+    → the platform can start WITHOUT running `pnpm build`
+  • DEPLOY-NOW.txt (this file)
+
+Your bots, env vars, logs and database live in DATA_DIR
+(/opt/eplyd/data) — deploying this zip never touches them.
+
+────────────────────────────────────────────────────────────────
+ DEPLOY ON THE VPS (copy-paste, ~2 minutes)
+────────────────────────────────────────────────────────────────
+# 1) upload this zip to /opt/eplyd/ (SFTP or your panel), then:
+cd /opt/eplyd
+rm -rf app && unzip eplyd-complete-deploy.zip -d app && cd app
+chmod +x start.sh scripts/*.sh
+
+# 2) config (REQUIRED — the .env was on the old deleted folder)
+cp .env.example .env && nano .env
+#    ADMIN_PASSWORD="@rsh0712"          <- keep the quotes!
+#    SESSION_SECRET=<openssl rand -hex 32>
+#    ENCRYPTION_KEY=<reuse your OLD one if you have it>
+#    PUBLIC_URL=https://eplyd.dpdns.org
+
+# 3) install dependencies (compiles native modules for YOUR server —
+#    cannot be skipped; this is the only slow step)
+pnpm install
+
+# 4) start — no build needed (dist/ is prebuilt), but `pnpm build`
+#    on the server is still recommended after this first boot:
+pm2 start ecosystem.config.js && pm2 save
+
+# 5) restore the Cloudflare tunnel (you killed it with pm2 kill)
+pm2 start "cloudflared tunnel run --token YOUR_TUNNEL_TOKEN" --name tunnel && pm2 save
+
+# 6) verify
+curl -s http://localhost:3000/healthz
+#    → {"ok":true,"build":"700d288","builtAt":"2026-10-01 11:45 UTC",...}
+#    Then open https://eplyd.dpdns.org and hard-refresh (Ctrl/Cmd+Shift+R)
+
+────────────────────────────────────────────────────────────────
+ OPTIONAL but recommended (first boot only)
+────────────────────────────────────────────────────────────────
+pnpm build          # re-stamps the build id from YOUR git repo
+pm2 reload eplyd --update-env
+
+────────────────────────────────────────────────────────────────
+ ⚠ DO NOT upload this zip to GitHub via the web "Upload files"
+   page — it has MORE than 100 files and GitHub silently drops
+   the extras. For GitHub, use the source-only eplyd.zip in
+   2–3 batches, or push with git.
+────────────────────────────────────────────────────────────────
+
+Full guide: docs/DEPLOY.md · Routes: docs/ROUTES.md
+Troubleshooting "old interface": docs/DEPLOY.md → Troubleshooting

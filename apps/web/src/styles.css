@@ -1,0 +1,181 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-bg text-ink-text font-sans antialiased;
+}
+
+/* ---- scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #23302c transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #23302c;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---- login background: animated grid + glow ---- */
+.login-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(1000px 500px at 20% -10%, rgba(61, 220, 151, 0.16), transparent 60%),
+    radial-gradient(800px 400px at 90% 110%, rgba(61, 220, 151, 0.09), transparent 60%),
+    #0b0f0e;
+}
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background-image: linear-gradient(rgba(61, 220, 151, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 220, 151, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: grid-drift 24s linear infinite;
+}
+@keyframes grid-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(44px, 44px, 0);
+  }
+}
+
+/* ---- xterm sizing ---- */
+.xterm-host {
+  height: 100%;
+  width: 100%;
+}
+.xterm .xterm-viewport {
+  background-color: transparent !important;
+}
+
+/* ---- focus states ---- */
+:focus-visible {
+  outline: 2px solid rgba(61, 220, 151, 0.6);
+  outline-offset: 1px;
+}
+
+/* ---- skeletons ---- */
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.skeleton {
+  animation: pulse-soft 1.6s ease-in-out infinite;
+  @apply rounded bg-ink-panel2;
+}
+
+/* ---- toast slide-in ---- */
+@keyframes toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.toast {
+  animation: toast-in 0.18s ease-out;
+}
+
+/* ---- monaco tweaks ---- */
+.monaco-editor,
+.monaco-editor-background,
+.monaco-editor .margin {
+  background-color: #0d1312 !important;
+}
+.monaco-editor .scroll-decoration {
+  box-shadow: none !important;
+}
+
+/* ---- landing page ---- */
+.land-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 560px at 18% -12%, rgba(61, 220, 151, 0.14), transparent 60%),
+    radial-gradient(900px 460px at 88% 108%, rgba(61, 220, 151, 0.08), transparent 62%),
+    #0b0f0e;
+}
+.land-bg::before {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background-image: linear-gradient(rgba(61, 220, 151, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 220, 151, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: grid-drift 26s linear infinite;
+}
+.land-bg::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -260px;
+  width: 640px;
+  height: 640px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(61, 220, 151, 0.12), transparent 72%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.55s ease-out both;
+}
+.rise-1 { animation-delay: 0.05s; }
+.rise-2 { animation-delay: 0.14s; }
+.rise-3 { animation-delay: 0.23s; }
+.rise-4 { animation-delay: 0.32s; }
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.float-y {
+  animation: float-y 5.5s ease-in-out infinite;
+}
+
+.glow-ring {
+  box-shadow:
+    0 0 0 1px rgba(61, 220, 151, 0.18),
+    0 24px 70px -30px rgba(61, 220, 151, 0.35),
+    0 8px 40px -18px rgba(0, 0, 0, 0.8);
+}
